@@ -4,11 +4,25 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Frontend.Views"
-      mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
-      Title="LoginPage">
+      mc:Ignorable="d"
+      d:DesignHeight="350" d:DesignWidth="250"
+      Title="LoginPage"
+      Height="350" Width="250"
+      HorizontalAlignment="Center" VerticalAlignment="Center" 
+      Foreground="{x:Null}" Background="Transparent">
 
     <Grid>
-        
+        <StackPanel Background="#FFB7CFFC">
+            <Label Content="Sign in" Margin="0,20,0,0" Width="85" Height="35" FontSize="20" FontFamily="Arial Black" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label Content="Username:" Width="75" Height="30" FontSize="14" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Name="UsernameBox" Text="{Binding Username, Mode=OneWayToSource}" BorderBrush="{x:Null}" Width="220" Height="25" Margin="15,0,15,0"/>
+            <Label Content="Password:" Width="72" Height="28" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+            <PasswordBox Name="PasswordBox" Width="220" Background="White" BorderBrush="{x:Null}" Margin="15,0,15,0" Height="25"/>
+            <Button Name="SigninButton" Content="Sign in" Command="{Binding SigninCommand}" IsEnabled="{Binding IsButtonEnable}" Margin="15,5,15,0" VerticalAlignment="Top" Background="#FF139302" BorderBrush="{x:Null}" Foreground="#FFE7E1E1" Height="20"/>
+            <Label Content="or" Width="25" Height="25" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Name="GuestAccessingButton" Content="Access as a guest" Command="{Binding AccessCommand}" IsEnabled="{Binding IsButtonEnable}" Background="#FF139302" BorderBrush="{x:Null}" Foreground="#FFE7E1E1" Height="20" Width="220" Margin="15,0,15,0" VerticalAlignment="Top"/>
+            <Button Name="CreateUserButton" Content="New to here? Create an account!" Command="{Binding CreateAccountCommand}" IsEnabled="{Binding IsButtonEnable}" Background="White" BorderBrush="{x:Null}" Foreground="#FF0D1EF3" Height="30" Width="220" Margin="15,20,15,20"/>
+            <TextBox Name="InfoDisplayBox" Text="{Binding Message, Mode=OneWay}" IsEnabled="False" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" SelectionTextBrush="{x:Null}" FontWeight="Bold" FontSize="14" Foreground="Red" Width="220" Height="30" Margin="15,0,15,0"/>
+        </StackPanel>
     </Grid>
 </Page>

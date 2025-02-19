@@ -19,29 +19,37 @@ using System.Windows.Shapes;
 namespace Frontend.Views
 {
     /// <summary>
-    /// Interaction logic for LoginPage.xaml
+    /// Interaction logic for SignupPage.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class SignupPage : Page
     {
         private readonly IWindsorContainer container;
-        private readonly LoginPageViewModel loginPageViewModel;
-
-        public LoginPage(IContainerHelper containerHelper)
+        private readonly SignupPageViewModel signupPageViewModel;
+        public SignupPage(IContainerHelper containerHelper)
         {
             InitializeComponent();
 
             container = containerHelper.Container;
-            loginPageViewModel = container.Resolve<LoginPageViewModel>();
-            DataContext = loginPageViewModel;
+            signupPageViewModel = container.Resolve<SignupPageViewModel>();
+            DataContext = signupPageViewModel;
 
             PasswordBox.LostFocus += PasswordBox_LostFocus;
+            SamePasswordBox.LostFocus += SamePasswordBox_LostFocus;
+        }
+
+        private void SamePasswordBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(SamePasswordBox.Password))
+            {
+                signupPageViewModel.SamePassword = SamePasswordBox.Password;
+            }
         }
 
         private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(PasswordBox.Password))
             {
-                loginPageViewModel.Password = PasswordBox.Password;
+                signupPageViewModel.Password = PasswordBox.Password;
             }
         }
     }

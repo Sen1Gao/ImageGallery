@@ -19,30 +19,20 @@ using System.Windows.Shapes;
 namespace Frontend.Views
 {
     /// <summary>
-    /// Interaction logic for LoginPage.xaml
+    /// Interaction logic for ImageBrowsePage.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class ImageBrowsePage : Page
     {
         private readonly IWindsorContainer container;
-        private readonly LoginPageViewModel loginPageViewModel;
+        private readonly ImageBrowseViewModel imageBrowseViewModel;
 
-        public LoginPage(IContainerHelper containerHelper)
+        public ImageBrowsePage(IContainerHelper containerHelper)
         {
             InitializeComponent();
 
             container = containerHelper.Container;
-            loginPageViewModel = container.Resolve<LoginPageViewModel>();
-            DataContext = loginPageViewModel;
-
-            PasswordBox.LostFocus += PasswordBox_LostFocus;
-        }
-
-        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(PasswordBox.Password))
-            {
-                loginPageViewModel.Password = PasswordBox.Password;
-            }
+            imageBrowseViewModel = container.Resolve<ImageBrowseViewModel>();
+            DataContext = imageBrowseViewModel;
         }
     }
 }
