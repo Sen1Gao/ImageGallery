@@ -36,15 +36,27 @@ namespace Frontend.Services
             }
         }
 
-        public void NavigateTo(object content)
+        public void NavigateTo(object content, bool keepHistory = false)
         {
             if (frame != null && isSet == true)
             {
-                while (frame.CanGoBack)
+                while (frame.CanGoBack && keepHistory == false)
                 {
                     frame.RemoveBackEntry();
                 }
                 frame.Navigate(content);
+            }
+        }
+
+        void INavigationService.GoBack()
+        {
+            if (frame != null && isSet == true)
+            {
+                if (frame.CanGoBack)
+                {
+                    frame.GoBack();
+                }
+
             }
         }
     }

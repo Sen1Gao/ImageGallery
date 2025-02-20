@@ -1,6 +1,7 @@
 ﻿using Backend.interfaces;
 using MySql.Data.MySqlClient;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Backend.Services
 {
@@ -150,7 +151,36 @@ namespace Backend.Services
                     }
                 }
             }
-            
+
+        }
+
+        public async Task<bool> UploadImageAsync(string fileName, string description, string tag)
+        {
+            //Images:
+            // ImageURL VARCHAR(255) NOT NULL,Description TEXT,Tags VARCHAR(255)
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var query = "INSERT INTO Images (ImageURL, Description, Tags) VALUES (@ImageURL, @Description, @Tags)";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ImageURL", fileName);
+                    command.Parameters.AddWithValue("@Description", description);
+                    command.Parameters.AddWithValue("@Tags", tag);
+
+                    connection.Open();
+                    var rowsInserted = await command.ExecuteNonQueryAsync();
+                    if (rowsInserted > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
         }
     }
 }

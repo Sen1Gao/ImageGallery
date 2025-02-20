@@ -11,6 +11,8 @@ namespace Frontend.Interfaces
     {
         Frame Frame { set; }
 
-        void NavigateTo(object content);
+        void NavigateTo(object content,bool keepHistory=false);
+
+        void GoBack();
     }
 }

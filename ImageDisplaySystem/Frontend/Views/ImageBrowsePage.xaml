@@ -12,21 +12,6 @@
       Foreground="{x:Null}" Background="Transparent">
 
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden">
-            <ItemsControl ItemsSource="{Binding}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <Image Source="{Binding }" MaxHeight="300" MaxWidth="300" Stretch="None" Margin="5,5,5,0"></Image>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <Button Name="AddImageButton" Content="Add Image" Command="{Binding AddImageCommand}" Visibility="{Binding AddingImageButtonVisibility}" Width="80" Height="35"/>
     </Grid>
 </Page>

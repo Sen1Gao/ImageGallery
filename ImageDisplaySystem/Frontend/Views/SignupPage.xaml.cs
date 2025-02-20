@@ -24,13 +24,13 @@ namespace Frontend.Views
     public partial class SignupPage : Page
     {
         private readonly IWindsorContainer container;
-        private readonly SignupPageViewModel signupPageViewModel;
+        private readonly SignupViewModel signupPageViewModel;
         public SignupPage(IContainerHelper containerHelper)
         {
             InitializeComponent();
 
             container = containerHelper.Container;
-            signupPageViewModel = container.Resolve<SignupPageViewModel>();
+            signupPageViewModel = container.Resolve<SignupViewModel>();
             DataContext = signupPageViewModel;
 
             PasswordBox.LostFocus += PasswordBox_LostFocus;

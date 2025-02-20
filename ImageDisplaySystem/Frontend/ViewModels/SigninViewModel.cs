@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Frontend.ViewModels
 {
-    public class LoginPageViewModel : INotifyPropertyChanged
+    public class SigninViewModel : INotifyPropertyChanged
     {
         private readonly INavigationService navigationService;
         private readonly IWindsorContainer container;
@@ -30,7 +30,7 @@ namespace Frontend.ViewModels
         private string password = "";
         private string message = "";
         private bool isButtonEnable = true;
-        public LoginPageViewModel(INavigationService navigationService, IContainerHelper container,
+        public SigninViewModel(INavigationService navigationService, IContainerHelper container,
             IHttpCommunication httpCommunication, IStatementManager statementManager)
         {
             this.navigationService = navigationService;

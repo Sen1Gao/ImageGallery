@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Frontend.ViewModels
 {
-    public class SignupPageViewModel : INotifyPropertyChanged
+    public class SignupViewModel : INotifyPropertyChanged
     {
         private readonly INavigationService navigationService;
         private readonly IWindsorContainer container;
@@ -27,7 +27,7 @@ namespace Frontend.ViewModels
         private string message = "";
         private bool isSignupButtonEnable=true;
         private bool isCancelButtonEnable = true;
-        public SignupPageViewModel(INavigationService navigationService, IContainerHelper container,
+        public SignupViewModel(INavigationService navigationService, IContainerHelper container,
             IHttpCommunication httpCommunication, IStatementManager statementManager)
         {
             this.navigationService = navigationService;
