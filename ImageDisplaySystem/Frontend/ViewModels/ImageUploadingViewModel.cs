@@ -1,5 +1,7 @@
-﻿using Frontend.Interfaces;
+﻿using Castle.Windsor;
+using Frontend.Interfaces;
 using Frontend.Services;
+using Frontend.Views;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 
 namespace Frontend.ViewModels
 {
@@ -18,6 +21,7 @@ namespace Frontend.ViewModels
     {
         private readonly INavigationService navigationService;
         private readonly IHttpCommunication httpCommunication;
+        private readonly IWindsorContainer container;
 
         private readonly ICommand selectImageCommand;
         private readonly ICommand uploadCommand;
@@ -28,10 +32,12 @@ namespace Frontend.ViewModels
         private string description;
         private string selectedFilePath;
         private bool isAllEnable;
-        public ImageUploadingViewModel(INavigationService navigationService, IHttpCommunication httpCommunication)
+        public ImageUploadingViewModel(INavigationService navigationService, IHttpCommunication httpCommunication,
+            IContainerHelper containerHelper)
         {
             this.navigationService = navigationService;
             this.httpCommunication = httpCommunication;
+            container = containerHelper.Container;
 
             selectImageCommand = new RelayCommand(ExecuteSelectImage);
             uploadCommand = new RelayCommand(ExecuteUpload);
@@ -109,7 +115,7 @@ namespace Frontend.ViewModels
                     if (result == true)
                     {
                         MessageBox.Show("Uploading completed.");
-                        navigationService.GoBack();
+                        navigationService.NavigateTo(container.Resolve<ImageBrowsePage>());
                     }
                     else
                     {
@@ -124,7 +130,7 @@ namespace Frontend.ViewModels
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                navigationService.GoBack();
+                navigationService.NavigateTo(container.Resolve<ImageBrowsePage>());
             });
         }
 

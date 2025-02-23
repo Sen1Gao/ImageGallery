@@ -42,16 +42,16 @@ namespace Backend.Controllers
         }
 
         [HttpGet("getImageInfo")]
-        public async Task<IActionResult> GetImageInfo(int page,int pageSize)
+        public async Task<IActionResult> GetImageInfo(int page, int pageSize)
         {
             var imageCardInfos = new List<ImageCardInfo>();
-            if(page < 1 || pageSize < 1)
+            if (page < 1 || pageSize < 1)
             {
                 return Ok(imageCardInfos);
             }
-            int startPos=(page-1)*pageSize;
-            int imageNumber=await dbManagement.GetTotalNumberOfImagesAsync();
-            if(imageNumber==0|| startPos>=imageNumber)
+            int startPos = (page - 1) * pageSize;
+            int imageNumber = await dbManagement.GetTotalNumberOfImagesAsync();
+            if (imageNumber == 0 || startPos >= imageNumber)
             {
                 return Ok(imageCardInfos);
             }
@@ -62,13 +62,42 @@ namespace Backend.Controllers
         [HttpGet("getImage")]
         public async Task<IActionResult> GetImage(string imageName)
         {
-            var imagePath = Environment.CurrentDirectory + "/UploadedImages"+$"/{imageName}";
+            var imagePath = Environment.CurrentDirectory + "/UploadedImages" + $"/{imageName}";
             if (!Path.Exists(imagePath))
             {
                 return NotFound();
             }
             var imageBytes = await System.IO.File.ReadAllBytesAsync(imagePath);
             return File(imageBytes, "image/jpeg");
+        }
+
+        [HttpGet("getReviews")]
+        public async Task<IActionResult> GetReviews(int imageID)
+        {
+            var reviewInfos = new List<ReviewInfo>();
+            reviewInfos = await dbManagement.GetReviewInfoAsync(imageID);
+            return Ok(reviewInfos);
+        }
+
+        [HttpPost("uploadReview")]
+        public async Task<IActionResult> UploadReview([FromBody] ReviewInfo reviewInfo)
+        {
+            var result = await dbManagement.UploadReviewAsync(reviewInfo.ImageID, reviewInfo.Review, reviewInfo.Rating);
+            return Ok(result);
+        }
+
+        [HttpDelete("deleteImage/{imageID}")]
+        public async Task<IActionResult> DeleteImage(int imageID)
+        {
+            var result = await dbManagement.DeleteImageAsync(imageID);
+            return Ok(result);
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateImageInfo([FromBody] ImageCardInfo imageCardInfo)
+        {
+            var result = await dbManagement.UpdataImageInfoAsync(imageCardInfo.ImageId, imageCardInfo.Tag, imageCardInfo.Description);
+            return Ok(result);
         }
     }
 }

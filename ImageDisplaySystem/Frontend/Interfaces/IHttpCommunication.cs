@@ -12,8 +12,12 @@ namespace Frontend.Interfaces
     {
         Task<bool> VerifyAsync(SigninInfoArgs args);
         Task<bool> RegisterAsync(SigninInfoArgs args);
-        Task<bool> UploadImageAsync(string filePath,  string description, string tag);
-        Task<List<ImageCardInfo>> GetImageCardInfos(int page, int pageSize);
-        Task<BitmapImage> GetImage(string imageName);
+        Task<bool> UploadImageAsync(string filePath, string description, string tag);
+        Task<List<ImageCardInfo>> GetImageCardInfosAsync(int page, int pageSize);
+        Task<BitmapImage> GetImageAsync(string imageName);
+        Task<List<ReviewInfo>> GetReviewInfosAsync(int imageID);
+        Task<bool> UploadReviewAsync(ReviewInfo reviewInfo);
+        Task<bool> DeleteImageAsync(int imageID);
+        Task<bool> UpdateImageInfoAsync(ImageCardInfo imageCardInfo);
     }
 }

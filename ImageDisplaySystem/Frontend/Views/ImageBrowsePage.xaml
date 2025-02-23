@@ -35,7 +35,7 @@
                 </ItemsControl>
             </ScrollViewer>
             <WrapPanel HorizontalAlignment="Center" Margin="0,5,0,0">
-                <Button Name="AddImageButton" Content="Add Image" Command="{Binding AddImageCommand}" Visibility="{Binding AddingImageButtonVisibility}" Width="80" Height="35" Margin="0,0,15,0"/>
+                <Button Name="AddImageButton" Content="Add Image" Command="{Binding AddImageCommand}" IsEnabled="{Binding IsButtonEnable}" Visibility="{Binding AddingImageButtonVisibility}" Width="80" Height="35" Margin="0,0,15,0"/>
                 <Button Content="Go Back" Command="{Binding GoBackCommand}" IsEnabled="{Binding IsButtonEnable}" Width="80" Height="35" Margin="0,0,15,0"></Button>
                 <Button Content="Go Next" Command="{Binding GoNextCommand}" IsEnabled="{Binding IsButtonEnable}" Width="80" Height="35"></Button>
             </WrapPanel>

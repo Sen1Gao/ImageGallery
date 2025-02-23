@@ -56,14 +56,16 @@ namespace Frontend
                 Component.For<SigninViewModel>().LifestyleTransient(),
                 Component.For<SignupViewModel>().LifestyleTransient(),
                 Component.For<ImageBrowseViewModel>().LifestyleTransient(),
-                Component.For<ImageUploadingViewModel>().LifestyleTransient()); 
+                Component.For<ImageUploadingViewModel>().LifestyleTransient(),
+                Component.For<ImageDetailsViewModel>().LifestyleTransient()); 
 
             //Register pages
             container.Register(
                 Component.For<LoginPage>().LifestyleTransient(),
                 Component.For<SignupPage>().LifestyleTransient(),
                 Component.For<ImageBrowsePage>().LifestyleTransient(),
-                Component.For<ImageUploadingPage>().LifestyleTransient());
+                Component.For<ImageUploadingPage>().LifestyleTransient(),
+                Component.For<ImageDetailsPage>().LifestyleTransient());
 
             //Register main window
             container.Register(

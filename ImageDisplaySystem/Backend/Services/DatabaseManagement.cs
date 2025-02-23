@@ -1,8 +1,12 @@
 ﻿using Backend.interfaces;
 using BasicArgs;
 using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 using System.Data;
+using static Mysqlx.Expect.Open.Types.Condition.Types;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 
 namespace Backend.Services
 {
@@ -229,6 +233,120 @@ namespace Backend.Services
                 }
             }
             return imageCardInfos;
+        }
+
+        public async Task<List<ReviewInfo>> GetReviewInfoAsync(int imageID)
+        {
+            //Reviews:
+            //ReviewID INT AUTO_INCREMENT PRIMARY KEY,
+            //ImageID INT NOT NULL,
+            //Rating INT CHECK(Rating BETWEEN 1 AND 5),
+            //Comment TEXT,
+
+            var reviewInfos = new List<ReviewInfo>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                string sql = "SELECT ReviewID, ImageID, Rating, Comment FROM Reviews WHERE ImageID = @ImageID";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@ImageID", imageID);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            reviewInfos.Add(new ReviewInfo
+                            {
+                                ReviewID = reader.GetInt32(reader.GetOrdinal("ReviewID")),
+                                ImageID = reader.GetInt32(reader.GetOrdinal("ImageID")),
+                                Rating = reader.GetInt32(reader.GetOrdinal("Rating")),
+                                Review = reader.GetString(reader.GetOrdinal("Comment"))
+                            });
+                        }
+                    }
+                }
+            }
+            return reviewInfos;
+        }
+
+        public async Task<bool> UploadReviewAsync(int imageID, string review, int rating)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var query = "INSERT INTO Reviews (ImageID, Rating, Comment) VALUES (@ImageID, @Rating, @Review)";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ImageID", imageID);
+                    command.Parameters.AddWithValue("@Rating", rating);
+                    command.Parameters.AddWithValue("@Review", review);
+
+                    await connection.OpenAsync();
+                    var rowsInserted = await command.ExecuteNonQueryAsync();
+                    if (rowsInserted > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public async Task<bool> DeleteImageAsync(int imageID)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var query = "DELETE FROM Images WHERE ImageID = @ImageID";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ImageID", imageID);
+
+                    await connection.OpenAsync();
+                    var rowsDeleted = await command.ExecuteNonQueryAsync();
+                    if (rowsDeleted > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public async Task<bool> UpdataImageInfoAsync(int imageID, string tag, string description)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                var query = "UPDATE Images SET Description = @Description, Tags = @Tags WHERE ImageID = @ImageID";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Description", description);
+                    command.Parameters.AddWithValue("@Tags", tag);
+                    command.Parameters.AddWithValue("@ImageID", imageID);
+
+                    await connection.OpenAsync();
+                    var rowsUpdated = await command.ExecuteNonQueryAsync();
+                    if (rowsUpdated > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
         }
     }
 }

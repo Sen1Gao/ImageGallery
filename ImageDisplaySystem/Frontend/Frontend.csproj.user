@@ -10,6 +10,9 @@
     <Compile Update="Views\ImageBrowsePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ImageDetailsPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\ImageUploadingPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -25,6 +28,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ImageBrowsePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ImageDetailsPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ImageUploadingPage.xaml">

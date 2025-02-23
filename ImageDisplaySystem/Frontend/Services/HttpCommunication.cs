@@ -7,11 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Frontend.Services
 {
@@ -79,7 +81,7 @@ namespace Frontend.Services
             }
         }
 
-        public async Task<List<ImageCardInfo>> GetImageCardInfos(int page, int pageSize)
+        public async Task<List<ImageCardInfo>> GetImageCardInfosAsync(int page, int pageSize)
         {
             var response = await httpClient.GetAsync($"api/image/getImageInfo?page={page}&pageSize={pageSize}");
             if (response.IsSuccessStatusCode)
@@ -94,7 +96,7 @@ namespace Frontend.Services
             return new List<ImageCardInfo>();
         }
 
-        public async Task<BitmapImage> GetImage(string imageName)
+        public async Task<BitmapImage> GetImageAsync(string imageName)
         {
             var response = await httpClient.GetAsync($"api/image/getImage?imageName={imageName}");
             if (response.IsSuccessStatusCode)
@@ -111,6 +113,60 @@ namespace Frontend.Services
                 }
             }
             return null;
+        }
+
+        public async Task<List<ReviewInfo>> GetReviewInfosAsync(int imageID)
+        {
+            var response = await httpClient.GetAsync($"api/image/getReviews?imageID={imageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var temp = JsonSerializer.Deserialize<List<ReviewInfo>>(result, option);
+                if (temp != null)
+                {
+                    return temp;
+                }
+            }
+            return new List<ReviewInfo>();
+        }
+
+        public async Task<bool> UploadReviewAsync(ReviewInfo reviewInfo)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(reviewInfo), Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync("api/image/uploadReview", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var temp = JsonSerializer.Deserialize<bool>(result, option);
+                return temp;
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteImageAsync(int imageID)
+        {
+            var response = await httpClient.DeleteAsync($"api/image/deleteImage/{imageID}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var temp = JsonSerializer.Deserialize<bool>(result, option);
+                return temp;
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateImageInfoAsync(ImageCardInfo imageCardInfo)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(imageCardInfo), Encoding.UTF8, "application/json");
+            var response = await httpClient.PutAsync("api/image/update", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var temp = JsonSerializer.Deserialize<bool>(result, option);
+                return temp;
+            }
+            return false;
         }
 
         protected virtual void Dispose(bool disposing)

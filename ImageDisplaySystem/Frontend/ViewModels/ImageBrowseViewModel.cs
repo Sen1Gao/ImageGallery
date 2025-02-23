@@ -33,8 +33,6 @@ namespace Frontend.ViewModels
 
         private Visibility addingImageButtonVisibility;
         private bool isButtonEnable=true;
-        private int page = 1;
-        private int pageSize = 10;
 
 
         public ImageBrowseViewModel(IStatementManager statementManager, INavigationService navigationService,
@@ -85,7 +83,7 @@ namespace Frontend.ViewModels
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                navigationService.NavigateTo(container.Resolve<ImageUploadingPage>(), true);
+                navigationService.NavigateTo(container.Resolve<ImageUploadingPage>());
             });
         }
 
@@ -101,7 +99,15 @@ namespace Frontend.ViewModels
 
         private void ExecuteCheckDetail(object? parameter)
         {
-
+            var imageCard = parameter as ImageCard;
+            if (imageCard != null)
+            {
+                statementManager.CurrentImageCard = imageCard;
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    navigationService.NavigateTo(container.Resolve<ImageDetailsPage>());
+                });
+            }
         }
 
         private void UpdateImageCardList(int direction=0)
@@ -110,13 +116,13 @@ namespace Frontend.ViewModels
             Task.Run(async () => {
                 if (direction > 0)
                 {
-                    page += 1;
+                    statementManager.Page += 1;
                 }
                 if (direction < 0)
                 {
-                    page -= 1;
+                    statementManager.Page -= 1;
                 }
-                var result = await httpCommunication.GetImageCardInfos(page, pageSize);
+                var result = await httpCommunication.GetImageCardInfosAsync(statementManager.Page, statementManager.PageSize);
                 if (result != null && result.Count > 0)
                 {
                     App.Current.Dispatcher.Invoke(() => {
@@ -124,7 +130,7 @@ namespace Frontend.ViewModels
                     });
                     foreach (var item in result)
                     {
-                        var image = await httpCommunication.GetImage(item.ImageURL);
+                        var image = await httpCommunication.GetImageAsync(item.ImageURL);
                         if (image == null)
                         {
                             continue;
@@ -144,14 +150,14 @@ namespace Frontend.ViewModels
                 {
                     if (direction > 0) 
                     {
-                        page -= 1;
+                        statementManager.Page -= 1;
                         App.Current.Dispatcher.Invoke(() => {
                             MessageBox.Show("You have been arrived at the last page!");
                         });
                     }
                     if (direction < 0)
                     {
-                        page += 1;
+                        statementManager.Page += 1;
                         App.Current.Dispatcher.Invoke(() => {
                             MessageBox.Show("You have been arrived at the first page!");
                         });
