@@ -12,6 +12,33 @@
       Foreground="{x:Null}" Background="Transparent">
 
     <Grid>
-        <Button Name="AddImageButton" Content="Add Image" Command="{Binding AddImageCommand}" Visibility="{Binding AddingImageButtonVisibility}" Width="80" Height="35"/>
+        <StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Hidden" Height="620">
+                <ItemsControl ItemsSource="{Binding ImageCardList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel></WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="5" BorderThickness="2" BorderBrush="#FF6BACCD" Padding="5">
+                                <StackPanel>
+                                    <Image Source="{Binding Image}" MaxHeight="300" MaxWidth="300" Stretch="Uniform"/>
+                                    <TextBlock Text="{Binding Tag}" Height="30" Width="200" Background="#FFEEE1E1" Foreground="Black" FontFamily="Arial Black" FontSize="16" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Description}" Height="40" Width="200" TextWrapping="Wrap" IsEnabled="False" Background="#FFDFCECE" Foreground="Black" FontSize="14"></TextBlock>
+                                    <Button Content="Click to check details" Command="{Binding DataContext.CheckDetailCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}" Height="20"></Button>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <WrapPanel HorizontalAlignment="Center" Margin="0,5,0,0">
+                <Button Name="AddImageButton" Content="Add Image" Command="{Binding AddImageCommand}" Visibility="{Binding AddingImageButtonVisibility}" Width="80" Height="35" Margin="0,0,15,0"/>
+                <Button Content="Go Back" Command="{Binding GoBackCommand}" IsEnabled="{Binding IsButtonEnable}" Width="80" Height="35" Margin="0,0,15,0"></Button>
+                <Button Content="Go Next" Command="{Binding GoNextCommand}" IsEnabled="{Binding IsButtonEnable}" Width="80" Height="35"></Button>
+            </WrapPanel>
+        </StackPanel>
     </Grid>
 </Page>

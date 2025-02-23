@@ -10,6 +10,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Frontend.Services
 {
@@ -75,6 +77,40 @@ namespace Frontend.Services
                 return false;
 
             }
+        }
+
+        public async Task<List<ImageCardInfo>> GetImageCardInfos(int page, int pageSize)
+        {
+            var response = await httpClient.GetAsync($"api/image/getImageInfo?page={page}&pageSize={pageSize}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var temp = JsonSerializer.Deserialize<List<ImageCardInfo>>(result, option);
+                if (temp != null)
+                {
+                    return temp;
+                }
+            }
+            return new List<ImageCardInfo>();
+        }
+
+        public async Task<BitmapImage> GetImage(string imageName)
+        {
+            var response = await httpClient.GetAsync($"api/image/getImage?imageName={imageName}");
+            if (response.IsSuccessStatusCode)
+            {
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                {
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.StreamSource = stream;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
+                    return bitmap;
+                }
+            }
+            return null;
         }
 
         protected virtual void Dispose(bool disposing)

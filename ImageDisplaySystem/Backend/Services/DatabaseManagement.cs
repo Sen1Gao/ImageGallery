@@ -1,4 +1,5 @@
 ﻿using Backend.interfaces;
+using BasicArgs;
 using MySql.Data.MySqlClient;
 using System.Data;
 using static System.Net.Mime.MediaTypeNames;
@@ -169,7 +170,7 @@ namespace Backend.Services
                     command.Parameters.AddWithValue("@Description", description);
                     command.Parameters.AddWithValue("@Tags", tag);
 
-                    connection.Open();
+                    await connection.OpenAsync();
                     var rowsInserted = await command.ExecuteNonQueryAsync();
                     if (rowsInserted > 0)
                     {
@@ -181,6 +182,53 @@ namespace Backend.Services
                     }
                 }
             }
+        }
+
+        public async Task<int> GetTotalNumberOfImagesAsync()
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                string sql = "SELECT COUNT(*) FROM Images";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    return Convert.ToInt32(await command.ExecuteScalarAsync());
+                }
+            }
+        }
+
+        public async Task<List<ImageCardInfo>> GetPagedImagesAsync(int offset, int limit)
+        {
+            var imageCardInfos = new List<ImageCardInfo>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                string sql = "SELECT ImageID, ImageURL, Description, Tags FROM Images ORDER BY ImageID ASC LIMIT @Limit OFFSET @Offset";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Limit", limit);
+                    command.Parameters.AddWithValue("@Offset", offset);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            imageCardInfos.Add(new ImageCardInfo
+                            {
+                                ImageId = reader.GetInt32(reader.GetOrdinal("ImageId")),
+                                ImageURL = reader.GetString(reader.GetOrdinal("ImageURL")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Tag = reader.GetString(reader.GetOrdinal("Tags"))
+                            });
+                        }
+                    }
+                }
+            }
+            return imageCardInfos;
         }
     }
 }

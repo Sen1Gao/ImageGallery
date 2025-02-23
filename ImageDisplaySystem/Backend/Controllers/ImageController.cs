@@ -40,5 +40,35 @@ namespace Backend.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("getImageInfo")]
+        public async Task<IActionResult> GetImageInfo(int page,int pageSize)
+        {
+            var imageCardInfos = new List<ImageCardInfo>();
+            if(page < 1 || pageSize < 1)
+            {
+                return Ok(imageCardInfos);
+            }
+            int startPos=(page-1)*pageSize;
+            int imageNumber=await dbManagement.GetTotalNumberOfImagesAsync();
+            if(imageNumber==0|| startPos>=imageNumber)
+            {
+                return Ok(imageCardInfos);
+            }
+            imageCardInfos = await dbManagement.GetPagedImagesAsync(startPos, pageSize);
+            return Ok(imageCardInfos);
+        }
+
+        [HttpGet("getImage")]
+        public async Task<IActionResult> GetImage(string imageName)
+        {
+            var imagePath = Environment.CurrentDirectory + "/UploadedImages"+$"/{imageName}";
+            if (!Path.Exists(imagePath))
+            {
+                return NotFound();
+            }
+            var imageBytes = await System.IO.File.ReadAllBytesAsync(imagePath);
+            return File(imageBytes, "image/jpeg");
+        }
     }
 }
