@@ -144,9 +144,9 @@ namespace Frontend.Services
             return false;
         }
 
-        public async Task<bool> DeleteImageAsync(int imageID)
+        public async Task<bool> DeleteImageAsync(int imageID,string imageName)
         {
-            var response = await httpClient.DeleteAsync($"api/image/deleteImage/{imageID}");
+            var response = await httpClient.DeleteAsync($"api/image/deleteImage/{imageID}/{imageName}");
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();

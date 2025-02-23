@@ -86,10 +86,15 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("deleteImage/{imageID}")]
-        public async Task<IActionResult> DeleteImage(int imageID)
+        [HttpDelete("deleteImage/{imageID}/{imageName}")]
+        public async Task<IActionResult> DeleteImage(int imageID,string imageName)
         {
             var result = await dbManagement.DeleteImageAsync(imageID);
+            var imagePath = Environment.CurrentDirectory + "/UploadedImages" + $"/{imageName}";
+            if (Path.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
             return Ok(result);
         }
 

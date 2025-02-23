@@ -32,7 +32,7 @@ namespace Frontend.ViewModels
         private readonly ICommand checkDetailCommand;
 
         private Visibility addingImageButtonVisibility;
-        private bool isButtonEnable=true;
+        private bool isButtonEnable = true;
 
 
         public ImageBrowseViewModel(IStatementManager statementManager, INavigationService navigationService,
@@ -110,10 +110,11 @@ namespace Frontend.ViewModels
             }
         }
 
-        private void UpdateImageCardList(int direction=0)
+        private void UpdateImageCardList(int direction = 0)
         {
-            IsButtonEnable=false;
-            Task.Run(async () => {
+            IsButtonEnable = false;
+            Task.Run(async () =>
+            {
                 if (direction > 0)
                 {
                     statementManager.Page += 1;
@@ -125,7 +126,8 @@ namespace Frontend.ViewModels
                 var result = await httpCommunication.GetImageCardInfosAsync(statementManager.Page, statementManager.PageSize);
                 if (result != null && result.Count > 0)
                 {
-                    App.Current.Dispatcher.Invoke(() => {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
                         ImageCardList.Clear();
                     });
                     foreach (var item in result)
@@ -135,10 +137,12 @@ namespace Frontend.ViewModels
                         {
                             continue;
                         }
-                        App.Current.Dispatcher.Invoke(() => {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
                             ImageCardList.Add(new ImageCard()
                             {
                                 ImageId = item.ImageId,
+                                ImageName = item.ImageURL,
                                 Image = image,
                                 Tag = item.Tag,
                                 Description = item.Description
@@ -148,22 +152,24 @@ namespace Frontend.ViewModels
                 }
                 else
                 {
-                    if (direction > 0) 
+                    if (direction > 0)
                     {
                         statementManager.Page -= 1;
-                        App.Current.Dispatcher.Invoke(() => {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
                             MessageBox.Show("You have been arrived at the last page!");
                         });
                     }
                     if (direction < 0)
                     {
                         statementManager.Page += 1;
-                        App.Current.Dispatcher.Invoke(() => {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
                             MessageBox.Show("You have been arrived at the first page!");
                         });
                     }
                 }
-                IsButtonEnable=true;
+                IsButtonEnable = true;
             });
         }
 

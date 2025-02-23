@@ -211,7 +211,7 @@ namespace Frontend.ViewModels
         {
             Task.Run(async () =>
             {
-                var result=await httpCommunication.DeleteImageAsync(imageCard.ImageId);
+                var result = await httpCommunication.DeleteImageAsync(imageCard.ImageId, imageCard.ImageName);
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     if (result == true)

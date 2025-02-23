@@ -17,7 +17,7 @@ namespace Frontend.Interfaces
         Task<BitmapImage> GetImageAsync(string imageName);
         Task<List<ReviewInfo>> GetReviewInfosAsync(int imageID);
         Task<bool> UploadReviewAsync(ReviewInfo reviewInfo);
-        Task<bool> DeleteImageAsync(int imageID);
+        Task<bool> DeleteImageAsync(int imageID,string imageName);
         Task<bool> UpdateImageInfoAsync(ImageCardInfo imageCardInfo);
     }
 }
