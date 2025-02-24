@@ -30,9 +30,12 @@ namespace Frontend.ViewModels
         private readonly ICommand goBackCommand;
         private readonly ICommand goNextCommand;
         private readonly ICommand checkDetailCommand;
+        private readonly ICommand searchCommand;
+        private readonly ICommand clearCommand;
 
         private Visibility addingImageButtonVisibility;
         private bool isButtonEnable = true;
+        private string searchingTag = "";
 
 
         public ImageBrowseViewModel(IStatementManager statementManager, INavigationService navigationService,
@@ -47,6 +50,9 @@ namespace Frontend.ViewModels
             goBackCommand = new RelayCommand(ExecuteGoBack);
             goNextCommand = new RelayCommand(ExecuteGoNext);
             checkDetailCommand = new RelayCommand(ExecuteCheckDetail);
+            searchCommand= new RelayCommand(ExecuteSearch);
+            clearCommand= new RelayCommand(ExecuteClearSearching);
+
             addingImageButtonVisibility = statementManager.SigninType == SigninType.Admin ? Visibility.Visible : Visibility.Collapsed;
             ImageCardList = new ObservableCollection<ImageCard>();
             UpdateImageCardList();
@@ -58,6 +64,8 @@ namespace Frontend.ViewModels
         public ICommand GoBackCommand => goBackCommand;
         public ICommand GoNextCommand => goNextCommand;
         public ICommand CheckDetailCommand => checkDetailCommand;
+        public ICommand SearchCommand => searchCommand;
+        public ICommand ClearCommand => clearCommand;
         public Visibility AddingImageButtonVisibility
         {
             get => addingImageButtonVisibility;
@@ -68,6 +76,16 @@ namespace Frontend.ViewModels
             }
         }
         public ObservableCollection<ImageCard> ImageCardList { get; set; }
+
+        public string SearchingTag
+        {
+            get => searchingTag;
+            set
+            {
+                searchingTag = value;
+                RaisePropertyChanged(nameof(SearchingTag));
+            }
+        }
 
         public bool IsButtonEnable
         {
@@ -108,6 +126,58 @@ namespace Frontend.ViewModels
                     navigationService.NavigateTo(container.Resolve<ImageDetailsPage>());
                 });
             }
+        }
+
+        private void ExecuteSearch(object? parameter)
+        {
+            if(string.IsNullOrEmpty(searchingTag))
+            {
+                return;
+            }
+            Task.Run(async () =>
+            {
+                var result = await httpCommunication.GetImagesBySearchAsync(searchingTag);
+                if (result != null && result.Count > 0)
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        ImageCardList.Clear();
+                    });
+                    foreach (var item in result)
+                    {
+                        var image = await httpCommunication.GetImageAsync(item.ImageURL);
+                        if (image == null)
+                        {
+                            continue;
+                        }
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            ImageCardList.Add(new ImageCard()
+                            {
+                                ImageId = item.ImageId,
+                                ImageName = item.ImageURL,
+                                Image = image,
+                                Tag = item.Tag,
+                                Description = item.Description
+                            });
+                        });
+                    }
+                }
+                else
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show("Searching failed! Please check your input,");
+                    });
+                }
+            });
+            
+        }
+
+        private void ExecuteClearSearching(object? parameter)
+        {
+            SearchingTag = "";
+            UpdateImageCardList();
         }
 
         private void UpdateImageCardList(int direction = 0)

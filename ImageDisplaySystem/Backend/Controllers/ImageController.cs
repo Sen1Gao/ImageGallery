@@ -104,5 +104,12 @@ namespace Backend.Controllers
             var result = await dbManagement.UpdataImageInfoAsync(imageCardInfo.ImageId, imageCardInfo.Tag, imageCardInfo.Description);
             return Ok(result);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> GetImageBySearch(string tag)
+        {
+            var result = await dbManagement.GetImagesBySearchingAsync(tag);
+            return Ok(result);
+        }
     }
 }

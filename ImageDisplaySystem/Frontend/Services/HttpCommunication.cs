@@ -169,6 +169,20 @@ namespace Frontend.Services
             return false;
         }
 
+        public async Task<List<ImageCardInfo>> GetImagesBySearchAsync(string tag)
+        {
+            var response = await httpClient.GetAsync($"api/image/search?tag={tag}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var temp = JsonSerializer.Deserialize<List<ImageCardInfo>>(result, option);
+                if (temp != null)
+                {
+                    return temp;
+                }
+            }
+            return new List<ImageCardInfo>();
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

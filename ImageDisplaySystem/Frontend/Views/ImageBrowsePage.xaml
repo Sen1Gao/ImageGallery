@@ -13,7 +13,12 @@
 
     <Grid>
         <StackPanel>
-            <ScrollViewer VerticalScrollBarVisibility="Hidden" Height="620">
+            <WrapPanel HorizontalAlignment="Center">
+                <TextBox Text="{Binding SearchingTag, Mode=TwoWay}" Height="30" Width="500" Margin="0,5,30,10"></TextBox>
+                <Button Content="Search" Command="{Binding SearchCommand}" Height="30" Margin="0,0,20,0"></Button>
+                <Button Content="Clear" Command="{Binding ClearCommand}" Height="30"></Button>
+            </WrapPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" Height="580">
                 <ItemsControl ItemsSource="{Binding ImageCardList}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

@@ -7,6 +7,7 @@ using static Mysqlx.Expect.Open.Types.Condition.Types;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using System.Collections.Generic;
 
 namespace Backend.Services
 {
@@ -347,6 +348,38 @@ namespace Backend.Services
                     }
                 }
             }
+        }
+
+        public async Task<List<ImageCardInfo>> GetImagesBySearchingAsync(string tag)
+        {
+            var imageCardInfos = new List<ImageCardInfo>();
+
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                string sql = "SELECT * FROM Images WHERE Tags LIKE CONCAT('%', @Tag, '%')";
+
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Tag", tag);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            imageCardInfos.Add(new ImageCardInfo
+                            {
+                                ImageId = reader.GetInt32(reader.GetOrdinal("ImageId")),
+                                ImageURL = reader.GetString(reader.GetOrdinal("ImageURL")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Tag = reader.GetString(reader.GetOrdinal("Tags"))
+                            });
+                        }
+                    }
+                }
+            }
+            return imageCardInfos;
         }
     }
 }

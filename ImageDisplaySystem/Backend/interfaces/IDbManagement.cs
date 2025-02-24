@@ -13,5 +13,6 @@ namespace Backend.interfaces
         Task<List<ReviewInfo>> GetReviewInfoAsync(int imageID);
         Task<bool> DeleteImageAsync(int imageID);
         Task<bool> UpdataImageInfoAsync(int imageID,string tag,string description);
+        Task<List<ImageCardInfo>> GetImagesBySearchingAsync(string tag);
     }
 }
