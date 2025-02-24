@@ -1,0 +1,11 @@
+Frontend:
+WPF(.NET 8)
+Castle.Windsor 6.0.0
+
+Backend:
+AspNetCore (.NET 8)
+Castle.Windsor 6.0.0
+Castle.Windsor.MsDependencyInjection 4.1.0
+MySql.Data 9.2.0
+
+Mysql 8.4
